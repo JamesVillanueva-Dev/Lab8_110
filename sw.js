@@ -1,7 +1,7 @@
 // sw.js - This file needs to be in the root of the directory to work,
 //         so do not move it next to the other scripts
 
-const CACHE_NAME = 'lab-8-starter';
+const CACHE_NAME = 'lab-8-v2';
 
 // Installs the service worker. Feed it some initial URLs to cache
 self.addEventListener('install', function (event) {
@@ -19,11 +19,26 @@ self.addEventListener('install', function (event) {
       ]);
     })
   );
+  self.skipWaiting();
 });
 
 // Activates the service worker
 self.addEventListener('activate', function (event) {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches.keys().then(function (cacheNames) {
+      return Promise.all(
+        cacheNames
+          .filter(function (cacheName) {
+            return cacheName.startsWith('lab-8-') && cacheName !== CACHE_NAME;
+          })
+          .map(function (cacheName) {
+            return caches.delete(cacheName);
+          })
+      );
+    }).then(function () {
+      return self.clients.claim();
+    })
+  );
 });
 
 // Intercept fetch requests and cache them

@@ -96,8 +96,17 @@ async function getRecipes() {
   // A1. TODO - Check local storage to see if there are any recipes.
   //            If there are recipes, return them.
   /**************************/
-  if (localStorage.getItem('recipes')) {
-    return JSON.parse(localStorage.getItem('recipes'));
+  const savedRecipes = localStorage.getItem('recipes');
+  if (savedRecipes) {
+    try {
+      const recipes = JSON.parse(savedRecipes);
+      if (Array.isArray(recipes) && recipes.length === RECIPE_URLS.length) {
+        return recipes;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    localStorage.removeItem('recipes');
   }
   // The rest of this method will be concerned with requesting the recipes
   // from the network
