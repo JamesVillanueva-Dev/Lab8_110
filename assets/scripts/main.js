@@ -10,6 +10,10 @@ const RECIPE_URLS = [
     'https://adarsh249.github.io/Lab8-Starter/recipes/6_one-pot-thanksgiving-dinner.json',
 ];
 
+// Detect base path for GitHub Pages compatibility
+// Works both locally (/) and on GitHub Pages (/repo-name/)
+const BASE_PATH = window.location.pathname.split('/').slice(0, -1).join('/') || '';
+
 // Run the init() function when the page has loaded
 window.addEventListener('DOMContentLoaded', init);
 
@@ -55,7 +59,8 @@ function initializeServiceWorker() {
   const registerSW = () => {
     // B3. TODO - Register './sw.js' as a service worker (The MDN article
     //            "Using Service Workers" will help you here)
-    navigator.serviceWorker.register('./sw.js')
+    const swPath = BASE_PATH ? BASE_PATH + '/sw.js' : './sw.js';
+    navigator.serviceWorker.register(swPath)
       // B4. TODO - Once the service worker has been successfully registered, console
       //            log that it was successful.
       .then(() => {
